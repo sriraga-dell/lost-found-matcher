@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashboard | Lost & Found Matcher</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<header class="hero small-hero">
+
+    <div class="hero-content">
+
+        <div>
+
+            <p class="eyebrow">
+                YOUR DASHBOARD
+            </p>
+
+            <h1>
+                Welcome, {{ session["user_name"] }} 👋
+            </h1>
+
+            <p>
+                Manage your lost and found reports in one place.
+            </p>
+
+        </div>
+
+        <div class="hero-buttons">
+
+            <a href="/" class="btn secondary-btn">
+                🏠 Home
+            </a>
+
+            <a href="/matches" class="btn secondary-btn">
+                🔎 Find Matches
+            </a>
+
+            <a href="/open-reports" class="btn secondary-btn">
+                📋 Open Reports
+            </a>
+
+            <a href="/logout" class="btn logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔴
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ total_lost }}
+                </h3>
+
+                <p>
+                    Lost Items
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🟢
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ total_found }}
+                </h3>
+
+                <p>
+                    Found Items
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📂
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ total_open }}
+                </h3>
+
+                <p>
+                    Open Reports
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🤝
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ total_matched }}
+                </h3>
+
+                <p>
+                    Matched
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✅
+            </div>
+
+            <div>
+
+                <h3>
+                    {{ total_returned }}
+                </h3>
+
+                <p>
+                    Returned
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- STATUS INFO -->
+
+    <section class="info-box">
+
+        <h3>
+            📌 Report Status
+        </h3>
+
+        <p>
+            <strong>Open</strong> = waiting for a match
+        </p>
+
+        <p>
+            <strong>Matched</strong> = possible owner/item match identified
+        </p>
+
+        <p>
+            <strong>Returned</strong> = item has been returned
+        </p>
+
+    </section>
+
+
+    <!-- OLD REPORT IMPORT -->
+
+    <section class="form-box match-box">
+
+        <h2>
+            📦 Import Old Test Reports
+        </h2>
+
+        <p>
+            If you created reports before the login system was added,
+            you can connect those old reports to your current account.
+        </p>
+
+        <a
+            href="/migrate-old-items"
+            class="btn primary-btn"
+        >
+            📦 Import Old Test Reports
+        </a>
+
+    </section>
+
+
+    <!-- LOST ITEMS -->
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    YOUR REPORTS
+                </p>
+
+                <h2>
+                    Recent Lost Items
+                </h2>
+
+            </div>
+
+            <a
+                href="/"
+                class="btn primary-btn"
+            >
+                + Report Lost Item
+            </a>
+
+        </div>
+
+
+        {% if recent_lost %}
+
+        <div class="items-grid">
+
+            {% for item in recent_lost %}
+
+            <article class="item-card">
+
+                <!-- IMAGE -->
+
+                <div class="item-image">
+
+                    {% if item["image"] %}
+
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + item['image']) }}"
+                            alt="{{ item['item_name'] }}"
+                            loading="lazy"
+                        >
+
+                    {% else %}
+
+                        <div class="no-image">
+
+                            <span class="no-image-icon">
+                                📷
+                            </span>
+
+                            <span>
+                                No Image
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="item-card-content">
+
+                    <div class="item-top">
+
+                        <span class="type-badge lost-badge">
+                            LOST
+                        </span>
+
+                        <span class="status-badge {{ item['status']|lower }}">
+                            {{ item["status"] }}
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ item["item_name"] }}
+                    </h3>
+
+
+                    <p class="description">
+                        {{ item["description"] }}
+                    </p>
+
+
+                    <div class="item-meta">
+
+                        <span>
+                            🆔 {{ item["report_id"] }}
+                        </span>
+
+                        <span>
+                            📁 {{ item["category"] }}
+                        </span>
+
+                        <span>
+                            📍 {{ item["location"] }}
+                        </span>
+
+                        <span>
+                            📅 {{ item["date"] }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="status-update">
+
+                        <h4>
+                            Update Status
+                        </h4>
+
+                        <form
+                            action="{{ url_for('update_status', item_id=item['id']) }}"
+                            method="POST"
+                        >
+
+                            <select name="status">
+
+                                <option
+                                    value="Open"
+                                    {% if item["status"] == "Open" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Open
+                                </option>
+
+                                <option
+                                    value="Matched"
+                                    {% if item["status"] == "Matched" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Matched
+                                </option>
+
+                                <option
+                                    value="Returned"
+                                    {% if item["status"] == "Returned" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Returned
+                                </option>
+
+                            </select>
+
+                            <button
+                                type="submit"
+                                class="btn primary-btn"
+                            >
+                                Update
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                🔍
+            </div>
+
+            <h3>
+                No lost reports yet
+            </h3>
+
+            <p>
+                Start by reporting your lost item.
+            </p>
+
+            <a
+                href="/"
+                class="btn primary-btn"
+            >
+                Report Lost Item
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FOUND ITEMS -->
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    YOUR REPORTS
+                </p>
+
+                <h2>
+                    Recent Found Items
+                </h2>
+
+            </div>
+
+            <a
+                href="/"
+                class="btn primary-btn"
+            >
+                + Report Found Item
+            </a>
+
+        </div>
+
+
+        {% if recent_found %}
+
+        <div class="items-grid">
+
+            {% for item in recent_found %}
+
+            <article class="item-card">
+
+                <!-- IMAGE -->
+
+                <div class="item-image">
+
+                    {% if item["image"] %}
+
+                        <img
+                            src="{{ url_for('static', filename='uploads/' + item['image']) }}"
+                            alt="{{ item['item_name'] }}"
+                            loading="lazy"
+                        >
+
+                    {% else %}
+
+                        <div class="no-image">
+
+                            <span class="no-image-icon">
+                                📷
+                            </span>
+
+                            <span>
+                                No Image
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="item-card-content">
+
+                    <div class="item-top">
+
+                        <span class="type-badge found-badge">
+                            FOUND
+                        </span>
+
+                        <span class="status-badge {{ item['status']|lower }}">
+                            {{ item["status"] }}
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ item["item_name"] }}
+                    </h3>
+
+
+                    <p class="description">
+                        {{ item["description"] }}
+                    </p>
+
+
+                    <div class="item-meta">
+
+                        <span>
+                            🆔 {{ item["report_id"] }}
+                        </span>
+
+                        <span>
+                            📁 {{ item["category"] }}
+                        </span>
+
+                        <span>
+                            📍 {{ item["location"] }}
+                        </span>
+
+                        <span>
+                            📅 {{ item["date"] }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="status-update">
+
+                        <h4>
+                            Update Status
+                        </h4>
+
+                        <form
+                            action="{{ url_for('update_status', item_id=item['id']) }}"
+                            method="POST"
+                        >
+
+                            <select name="status">
+
+                                <option
+                                    value="Open"
+                                    {% if item["status"] == "Open" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Open
+                                </option>
+
+                                <option
+                                    value="Matched"
+                                    {% if item["status"] == "Matched" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Matched
+                                </option>
+
+                                <option
+                                    value="Returned"
+                                    {% if item["status"] == "Returned" %}
+                                    selected
+                                    {% endif %}
+                                >
+                                    Returned
+                                </option>
+
+                            </select>
+
+                            <button
+                                type="submit"
+                                class="btn primary-btn"
+                            >
+                                Update
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+            <h3>
+                No found reports yet
+            </h3>
+
+            <p>
+                Start by reporting an item you found.
+            </p>
+
+            <a
+                href="/"
+                class="btn primary-btn"
+            >
+                Report Found Item
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- ACTIONS -->
+
+    <section class="dashboard-actions">
+
+        <a
+            href="/matches"
+            class="action-card"
+        >
+
+            <span>
+                🔎
+            </span>
+
+            <div>
+
+                <h3>
+                    Find Possible Matches
+                </h3>
+
+                <p>
+                    Compare lost and found reports.
+                </p>
+
+            </div>
+
+        </a>
+
+
+        <a
+            href="/open-reports"
+            class="action-card"
+        >
+
+            <span>
+                📋
+            </span>
+
+            <div>
+
+                <h3>
+                    View Open Reports
+                </h3>
+
+                <p>
+                    Browse currently open reports.
+                </p>
+
+            </div>
+
+        </a>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        Lost & Found Matcher © 2026
+    </p>
+
+</footer>
+
+</body>
+
+</html>

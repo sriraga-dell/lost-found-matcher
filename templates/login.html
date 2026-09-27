@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Lost & Found</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f4f5fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 720px;
+            min-height: 100vh;
+            background: white;
+            padding: 35px 60px;
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .welcome {
+            color: #5b57e8;
+            font-size: 23px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: #071b41;
+            font-size: 48px;
+            margin: 0 0 25px;
+        }
+
+        .subtitle {
+            color: #58708f;
+            font-size: 24px;
+            margin-bottom: 48px;
+        }
+
+        .form-container {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            color: #071b41;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        input {
+            width: 100%;
+            height: 64px;
+            padding: 0 20px;
+            border: 1px solid #d2d8e5;
+            border-radius: 18px;
+            font-size: 20px;
+            outline: none;
+            margin-bottom: 28px;
+        }
+
+        input:focus {
+            border-color: #5b57e8;
+        }
+
+        button {
+            width: 100%;
+            height: 60px;
+            border: none;
+            border-radius: 18px;
+            background: #5146e5;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4338ca;
+        }
+
+        .forgot {
+            margin-top: 20px;
+            margin-bottom: 25px;
+        }
+
+        .forgot a {
+            color: #5146e5;
+            font-size: 19px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .forgot a:hover {
+            text-decoration: underline;
+        }
+
+        .register-text {
+            color: #58708f;
+            font-size: 22px;
+            margin-top: 20px;
+        }
+
+        .register-text a {
+            color: #5146e5;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .home-link {
+            margin-top: 55px;
+        }
+
+        .home-link a {
+            color: #5146e5;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .error {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+
+            .login-container {
+                padding: 30px 25px;
+            }
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .subtitle {
+                font-size: 18px;
+            }
+
+            label {
+                font-size: 20px;
+            }
+
+            input {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="icon">🔐</div>
+
+    <div class="welcome">
+        WELCOME BACK
+    </div>
+
+    <h1>Login</h1>
+
+    <div class="subtitle">
+        Login to manage your lost and found reports.
+    </div>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <div class="form-container">
+
+        <form method="POST">
+
+            <label>Email</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Forgot Password -->
+
+    <div class="forgot">
+
+        <a href="{{ url_for('forgot_password') }}">
+            Forgot Password?
+        </a>
+
+    </div>
+
+    <div class="register-text">
+
+        Don't have an account?
+
+        <a href="{{ url_for('register') }}">
+            Create Account
+        </a>
+
+    </div>
+
+    <div class="home-link">
+
+        <a href="{{ url_for('home') }}">
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

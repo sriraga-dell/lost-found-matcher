@@ -1,0 +1,42 @@
+{
+    "lost_reports": [
+        {
+            "report_id": "L101",
+            "item_name": "Black wireless earbuds",
+            "category": "Electronics",
+            "description": "Black wireless earbuds in a small case",
+            "location": "Metro Station",
+            "date": "2026-09-15",
+            "status": "Open"
+        },
+        {
+            "report_id": "L102",
+            "item_name": "Blue school bag",
+            "category": "Bags",
+            "description": "Blue backpack with black zip",
+            "location": "College Campus",
+            "date": "2026-09-16",
+            "status": "Open"
+        }
+    ],
+    "found_reports": [
+        {
+            "report_id": "F205",
+            "item_name": "Black wireless earbuds case",
+            "category": "Electronics",
+            "description": "Black earbuds found inside a small case",
+            "location": "Metro Station",
+            "date": "2026-09-15",
+            "status": "Open"
+        },
+        {
+            "report_id": "F206",
+            "item_name": "Blue backpack",
+            "category": "Bags",
+            "description": "Blue school bag with black zip",
+            "location": "College Campus",
+            "date": "2026-09-16",
+            "status": "Open"
+        }
+    ]
+}

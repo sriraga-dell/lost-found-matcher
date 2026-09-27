@@ -1,0 +1,5 @@
+.env
+.venv/
+__pycache__/
+lost_found.db
+static/uploads/

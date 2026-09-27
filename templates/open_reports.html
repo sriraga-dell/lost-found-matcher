@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Open Reports | Lost & Found Matcher</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<header class="hero small-hero">
+
+    <div class="hero-content">
+
+        <div>
+
+            <p class="eyebrow">
+                COMMUNITY REPORTS
+            </p>
+
+            <h1>
+                Open Reports 📋
+            </h1>
+
+            <p>
+                Browse currently open lost and found reports.
+            </p>
+
+        </div>
+
+
+        <div class="hero-buttons">
+
+            <a
+                href="/"
+                class="btn secondary-btn"
+            >
+                🏠 Home
+            </a>
+
+            <a
+                href="/matches"
+                class="btn secondary-btn"
+            >
+                🔎 Matches
+            </a>
+
+            {% if session.get("user_id") %}
+
+            <a
+                href="/dashboard"
+                class="btn secondary-btn"
+            >
+                📊 Dashboard
+            </a>
+
+            <a
+                href="/logout"
+                class="btn logout-btn"
+            >
+                Logout
+            </a>
+
+            {% else %}
+
+            <a
+                href="/login"
+                class="btn secondary-btn"
+            >
+                Login
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+    <section class="search-box">
+
+        <p class="eyebrow">
+            FILTER REPORTS
+        </p>
+
+        <h2>
+            Search Open Reports
+        </h2>
+
+
+        <form
+            method="GET"
+            action="/open-reports"
+            class="search-form"
+        >
+
+            <select name="category">
+
+                <option value="">
+                    All Categories
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Electronics" %}
+                    selected
+                    {% endif %}
+                >
+                    Electronics
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Documents" %}
+                    selected
+                    {% endif %}
+                >
+                    Documents
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Clothing" %}
+                    selected
+                    {% endif %}
+                >
+                    Clothing
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Accessories" %}
+                    selected
+                    {% endif %}
+                >
+                    Accessories
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Books" %}
+                    selected
+                    {% endif %}
+                >
+                    Books
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Keys" %}
+                    selected
+                    {% endif %}
+                >
+                    Keys
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Bags" %}
+                    selected
+                    {% endif %}
+                >
+                    Bags
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Stationery" %}
+                    selected
+                    {% endif %}
+                >
+                    Stationery
+                </option>
+
+                <option
+                    {% if request.args.get("category") == "Other" %}
+                    selected
+                    {% endif %}
+                >
+                    Other
+                </option>
+
+            </select>
+
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Search location..."
+                value="{{ request.args.get('location', '') }}"
+            >
+
+
+            <button
+                type="submit"
+                class="btn primary-btn"
+            >
+                🔎 Search
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    RESULTS
+                </p>
+
+                <h2>
+                    {{ reports|length }} Open Report{% if reports|length != 1 %}s{% endif %}
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        {% if reports %}
+
+        <div class="items-grid">
+
+            {% for report in reports %}
+
+            <article class="item-card">
+
+                <div class="item-image">
+
+                    {% if report["image"] %}
+
+                    <img
+                        src="{{ url_for('static', filename='uploads/' + report['image']) }}"
+                        alt="{{ report['item_name'] }}"
+                        loading="lazy"
+                    >
+
+                    {% else %}
+
+                    <div class="no-image">
+
+                        <span class="no-image-icon">
+                            📷
+                        </span>
+
+                        <span>
+                            No Image
+                        </span>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="item-card-content">
+
+                    <div class="item-top">
+
+                        {% if report["item_type"] == "Lost" %}
+
+                        <span class="type-badge lost-badge">
+                            LOST
+                        </span>
+
+                        {% else %}
+
+                        <span class="type-badge found-badge">
+                            FOUND
+                        </span>
+
+                        {% endif %}
+
+
+                        <span class="status-badge open">
+                            OPEN
+                        </span>
+
+                    </div>
+
+
+                    <h3>
+                        {{ report["item_name"] }}
+                    </h3>
+
+
+                    <p class="description">
+                        {{ report["description"] }}
+                    </p>
+
+
+                    <div class="item-meta">
+
+                        <span>
+                            🆔 {{ report["report_id"] }}
+                        </span>
+
+                        <span>
+                            📁 {{ report["category"] }}
+                        </span>
+
+                        <span>
+                            📍 {{ report["location"] }}
+                        </span>
+
+                        <span>
+                            📅 {{ report["date"] }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="open-report-purpose">
+
+                        {% if report["item_type"] == "Lost" %}
+
+                        🔴 Someone reported this item as lost.
+                        A matching found report may help locate it.
+
+                        {% else %}
+
+                        🟢 Someone reported this item as found.
+                        A matching lost report may help identify its owner.
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+                📋
+            </div>
+
+            <h3>
+                No open reports found
+            </h3>
+
+            <p>
+                Try changing your category or location filter.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <p>
+        Lost & Found Matcher © 2026
+    </p>
+
+</footer>
+
+</body>
+
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Possible Matches</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="hero">
+
+    <div class="hero-content">
+
+        <p class="eyebrow">
+            LOST & FOUND MATCHER
+        </p>
+
+        <h1>
+            Possible Matches
+        </h1>
+
+        <p>
+            Smart matching between lost and found reports
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="/">
+                <button class="secondary-btn">
+                    Home
+                </button>
+            </a>
+
+            {% if session.get("user_id") %}
+
+            <a href="/dashboard">
+                <button class="secondary-btn">
+                    Dashboard
+                </button>
+            </a>
+
+            <a href="/open-reports">
+                <button class="secondary-btn">
+                    Open Reports
+                </button>
+            </a>
+
+            <a href="/logout">
+                <button class="danger-btn">
+                    Logout
+                </button>
+            </a>
+
+            {% else %}
+
+            <a href="/login">
+                <button class="secondary-btn">
+                    Login
+                </button>
+            </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <!-- SEARCH -->
+
+    <div class="form-box search-box">
+
+        <h2>
+            🔎 Search Matches
+        </h2>
+
+        <form
+            method="GET"
+            action="/matches"
+        >
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>
+                        Item Name
+                    </label>
+
+                    <input
+                        type="text"
+                        name="search"
+                        placeholder="Example: black bag"
+                        value="{{ request.args.get('search','') }}"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Category
+                    </label>
+
+                    <select name="category">
+
+                        <option value="">
+                            All Categories
+                        </option>
+
+                        <option
+                            value="Electronics"
+                            {% if request.args.get('category') == 'Electronics' %}selected{% endif %}
+                        >
+                            Electronics
+                        </option>
+
+                        <option
+                            value="Documents"
+                            {% if request.args.get('category') == 'Documents' %}selected{% endif %}
+                        >
+                            Documents
+                        </option>
+
+                        <option
+                            value="Clothing"
+                            {% if request.args.get('category') == 'Clothing' %}selected{% endif %}
+                        >
+                            Clothing
+                        </option>
+
+                        <option
+                            value="Accessories"
+                            {% if request.args.get('category') == 'Accessories' %}selected{% endif %}
+                        >
+                            Accessories
+                        </option>
+
+                        <option
+                            value="Books"
+                            {% if request.args.get('category') == 'Books' %}selected{% endif %}
+                        >
+                            Books
+                        </option>
+
+                        <option
+                            value="Keys"
+                            {% if request.args.get('category') == 'Keys' %}selected{% endif %}
+                        >
+                            Keys
+                        </option>
+
+                        <option
+                            value="Bags"
+                            {% if request.args.get('category') == 'Bags' %}selected{% endif %}
+                        >
+                            Bags
+                        </option>
+
+                        <option
+                            value="Stationery"
+                            {% if request.args.get('category') == 'Stationery' %}selected{% endif %}
+                        >
+                            Stationery
+                        </option>
+
+                        <option
+                            value="Other"
+                            {% if request.args.get('category') == 'Other' %}selected{% endif %}
+                        >
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        name="location"
+                        placeholder="Example: park"
+                        value="{{ request.args.get('location','') }}"
+                    >
+
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="primary-btn"
+            >
+                🔍 Find Matches
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- RESULTS -->
+
+    <div class="section-heading">
+
+        <p class="eyebrow">
+            SMART RESULTS
+        </p>
+
+        <h2>
+            {{ matches|length }} Possible Match{% if matches|length != 1 %}es{% endif %}
+        </h2>
+
+    </div>
+
+
+    {% if matches %}
+
+        <div class="match-list">
+
+        {% for match in matches %}
+
+            <div class="match-card">
+
+                <!-- MATCH HEADER -->
+
+                <div class="match-top">
+
+                    <div>
+
+                        <span class="match-label">
+                            {{ match.label }}
+                        </span>
+
+                        <h2>
+                            Possible Match Found
+                        </h2>
+
+                    </div>
+
+
+                    <div class="score-box">
+
+                        <strong>
+                            {{ match.score }}%
+                        </strong>
+
+                        <span>
+                            Confidence
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SCORE BAR -->
+
+                <div class="score-bar">
+
+                    <div
+                        class="score-fill"
+                        style="width: {{ match.score }}%;"
+                    ></div>
+
+                </div>
+
+
+                <!-- TWO REPORTS -->
+
+                <div class="match-grid">
+
+
+                    <!-- LOST -->
+
+                    <div class="report-card">
+
+                        <div class="report-header">
+
+                            <span class="lost-badge">
+                                LOST
+                            </span>
+
+                            <strong>
+                                {{ match.lost["report_id"] }}
+                            </strong>
+
+                        </div>
+
+
+                        {% if match.lost["image"] %}
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + match.lost['image']) }}"
+                                class="match-image"
+                                alt="Lost item"
+                            >
+
+                        {% else %}
+
+                            <div class="no-image">
+
+                                <span>
+                                    📷
+                                </span>
+
+                                <p>
+                                    No Image
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <h3>
+                            {{ match.lost["item_name"] }}
+                        </h3>
+
+                        <p>
+                            {{ match.lost["description"] }}
+                        </p>
+
+
+                        <div class="details">
+
+                            <span>
+                                📁 {{ match.lost["category"] }}
+                            </span>
+
+                            <span>
+                                📍 {{ match.lost["location"] }}
+                            </span>
+
+                            <span>
+                                📅 {{ match.lost["date"] }}
+                            </span>
+
+                            <span>
+                                🔵 Status: {{ match.lost["status"] }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONNECTION -->
+
+                    <div class="match-connector">
+
+                        <div class="connector-icon">
+                            ↔
+                        </div>
+
+                        <strong>
+                            MATCH
+                        </strong>
+
+                    </div>
+
+
+                    <!-- FOUND -->
+
+                    <div class="report-card">
+
+                        <div class="report-header">
+
+                            <span class="found-badge">
+                                FOUND
+                            </span>
+
+                            <strong>
+                                {{ match.found["report_id"] }}
+                            </strong>
+
+                        </div>
+
+
+                        {% if match.found["image"] %}
+
+                            <img
+                                src="{{ url_for('static', filename='uploads/' + match.found['image']) }}"
+                                class="match-image"
+                                alt="Found item"
+                            >
+
+                        {% else %}
+
+                            <div class="no-image">
+
+                                <span>
+                                    📷
+                                </span>
+
+                                <p>
+                                    No Image
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <h3>
+                            {{ match.found["item_name"] }}
+                        </h3>
+
+                        <p>
+                            {{ match.found["description"] }}
+                        </p>
+
+
+                        <div class="details">
+
+                            <span>
+                                📁 {{ match.found["category"] }}
+                            </span>
+
+                            <span>
+                                📍 {{ match.found["location"] }}
+                            </span>
+
+                            <span>
+                                📅 {{ match.found["date"] }}
+                            </span>
+
+                            <span>
+                                🟢 Status: {{ match.found["status"] }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DETAILED ANALYSIS -->
+
+                <div class="analysis-box">
+
+                    <div class="analysis-title">
+
+                        <span>
+                            🧠
+                        </span>
+
+                        <h3>
+                            Match Analysis
+                        </h3>
+
+                    </div>
+
+
+                    <div class="analysis-grid">
+
+
+                        <!-- ITEM -->
+
+                        <div class="analysis-item">
+
+                            <div>
+
+                                <strong>
+                                    Item Name
+                                </strong>
+
+                                <small>
+                                    {{ match.details.item_percent }}% similarity
+                                </small>
+
+                            </div>
+
+                            <strong>
+                                {{ match.details.item_score }}/40
+                            </strong>
+
+                        </div>
+
+
+                        <!-- CATEGORY -->
+
+                        <div class="analysis-item">
+
+                            <div>
+
+                                <strong>
+                                    Category
+                                </strong>
+
+                                <small>
+                                    {{ match.details.category_percent }}% similarity
+                                </small>
+
+                            </div>
+
+                            <strong>
+                                {{ match.details.category_score }}/25
+                            </strong>
+
+                        </div>
+
+
+                        <!-- LOCATION -->
+
+                        <div class="analysis-item">
+
+                            <div>
+
+                                <strong>
+                                    Location
+                                </strong>
+
+                                <small>
+                                    {{ match.details.location_percent }}% similarity
+                                </small>
+
+                            </div>
+
+                            <strong>
+                                {{ match.details.location_score }}/20
+                            </strong>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="analysis-item">
+
+                            <div>
+
+                                <strong>
+                                    Description
+                                </strong>
+
+                                <small>
+                                    {{ match.details.description_percent }}% similarity
+                                </small>
+
+                            </div>
+
+                            <strong>
+                                {{ match.details.description_score }}/15
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL -->
+
+                    <div class="analysis-total">
+
+                        <span>
+                            TOTAL MATCH SCORE
+                        </span>
+
+                        <strong>
+                            {{ match.score }}/100
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EXPLANATION -->
+
+                <div class="match-note">
+
+                    <strong>
+                        💡 How this match was calculated
+                    </strong>
+
+                    <p>
+                        The system compares the item name,
+                        category, location and description using
+                        fuzzy text similarity and common keywords.
+                        The result is a suggestion and should be
+                        verified by the users.
+                    </p>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+        </div>
+
+
+    {% else %}
+
+        <div class="empty-state">
+
+            <div>
+                🔍
+            </div>
+
+            <h2>
+                No Possible Matches
+            </h2>
+
+            <p>
+                Try changing the search filters or add more
+                lost and found reports.
+            </p>
+
+            <a href="/">
+                <button class="primary-btn">
+                    Add a Report
+                </button>
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<footer>
+
+    <p>
+        Lost & Found Matcher
+    </p>
+
+    <span>
+        Smart matching • Secure reports • Easy recovery
+    </span>
+
+</footer>
+
+</body>
+
+</html>

@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Lost & Found </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<header class="hero">
+
+    <div class="hero-content">
+
+        <div>
+
+            <p class="eyebrow">
+                SMART LOST & FOUND
+            </p>
+
+            <h1>
+                Lost & Found
+            </h1>
+
+            <p>
+                Report lost or found items and discover possible matches
+                using intelligent text matching.
+            </p>
+
+        </div>
+
+
+        <div class="hero-buttons">
+
+            {% if session.get("user_id") %}
+
+                <a
+                    href="/dashboard"
+                    class="btn secondary-btn"
+                >
+                    📊 Dashboard
+                </a>
+
+                <a
+                    href="/open-reports"
+                    class="btn secondary-btn"
+                >
+                    📋 Open Reports
+                </a>
+
+                <a
+                    href="/matches"
+                    class="btn secondary-btn"
+                >
+                    🔎 Matches
+                </a>
+
+                <a
+                    href="/logout"
+                    class="btn logout-btn"
+                >
+                    Logout
+                </a>
+
+            {% else %}
+
+                <a
+                    href="/login"
+                    class="btn secondary-btn"
+                >
+                    Login
+                </a>
+
+                <a
+                    href="/register"
+                    class="btn primary-btn"
+                >
+                    Create Account
+                </a>
+
+                <a
+                    href="/open-reports"
+                    class="btn secondary-btn"
+                >
+                    Open Reports
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<main class="container">
+
+    {% if session.get("user_id") %}
+
+    <!-- REPORT FORMS -->
+
+    <section class="forms-grid">
+
+
+        <!-- LOST FORM -->
+
+        <div class="form-box">
+
+            <div class="form-title">
+
+                <span class="big-icon">
+                    🔴
+                </span>
+
+                <div>
+
+                    <h2>
+                        Report Lost Item
+                    </h2>
+
+                    <p>
+                        Tell us about the item you lost.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                action="/lost"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <label>
+                    Item Name
+                </label>
+
+                <input
+                    type="text"
+                    name="item_name"
+                    placeholder="Example: Black wireless earbuds"
+                    required
+                >
+
+
+                <label>
+                    Description
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Describe the item..."
+                    required
+                ></textarea>
+
+
+                <label>
+                    Category
+                </label>
+
+                <select
+                    name="category"
+                    required
+                >
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option>
+                        Electronics
+                    </option>
+
+                    <option>
+                        Documents
+                    </option>
+
+                    <option>
+                        Clothing
+                    </option>
+
+                    <option>
+                        Accessories
+                    </option>
+
+                    <option>
+                        Books
+                    </option>
+
+                    <option>
+                        Keys
+                    </option>
+
+                    <option>
+                        Bags
+                    </option>
+
+                    <option>
+                        Stationery
+                    </option>
+
+                    <option>
+                        Other
+                    </option>
+
+                </select>
+
+
+                <label>
+                    Location
+                </label>
+
+                <input
+                    type="text"
+                    name="location"
+                    placeholder="Example: Metro Station"
+                    required
+                >
+
+
+                <label>
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    name="date"
+                    required
+                >
+
+
+                <label>
+                    Upload Image
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    accept=".png,.jpg,.jpeg,.gif,.webp"
+                >
+
+                <small>
+                    Optional • Maximum 5 MB
+                </small>
+
+
+                <button
+                    type="submit"
+                    class="btn primary-btn full-btn"
+                >
+                    🔴 Submit Lost Report
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- FOUND FORM -->
+
+        <div class="form-box">
+
+            <div class="form-title">
+
+                <span class="big-icon">
+                    🟢
+                </span>
+
+                <div>
+
+                    <h2>
+                        Report Found Item
+                    </h2>
+
+                    <p>
+                        Tell us about an item you found.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                action="/found"
+                method="POST"
+                enctype="multipart/form-data"
+            >
+
+                <label>
+                    Item Name
+                </label>
+
+                <input
+                    type="text"
+                    name="item_name"
+                    placeholder="Example: Black wireless earbuds"
+                    required
+                >
+
+
+                <label>
+                    Description
+                </label>
+
+                <textarea
+                    name="description"
+                    placeholder="Describe the item..."
+                    required
+                ></textarea>
+
+
+                <label>
+                    Category
+                </label>
+
+                <select
+                    name="category"
+                    required
+                >
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                    <option>
+                        Electronics
+                    </option>
+
+                    <option>
+                        Documents
+                    </option>
+
+                    <option>
+                        Clothing
+                    </option>
+
+                    <option>
+                        Accessories
+                    </option>
+
+                    <option>
+                        Books
+                    </option>
+
+                    <option>
+                        Keys
+                    </option>
+
+                    <option>
+                        Bags
+                    </option>
+
+                    <option>
+                        Stationery
+                    </option>
+
+                    <option>
+                        Other
+                    </option>
+
+                </select>
+
+
+                <label>
+                    Location
+                </label>
+
+                <input
+                    type="text"
+                    name="location"
+                    placeholder="Example: Metro Station"
+                    required
+                >
+
+
+                <label>
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    name="date"
+                    required
+                >
+
+
+                <label>
+                    Upload Image
+                </label>
+
+                <input
+                    type="file"
+                    name="image"
+                    accept=".png,.jpg,.jpeg,.gif,.webp"
+                >
+
+                <small>
+                    Optional • Maximum 5 MB
+                </small>
+
+
+                <button
+                    type="submit"
+                    class="btn primary-btn full-btn"
+                >
+                    🟢 Submit Found Report
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+
+    <!-- QUICK ACTIONS -->
+
+    <section class="quick-section">
+
+        <p class="eyebrow">
+            QUICK ACTIONS
+        </p>
+
+        <h2>
+            What would you like to do?
+        </h2>
+
+
+        <div class="quick-grid">
+
+            <a
+                href="/matches"
+                class="quick-card"
+            >
+
+                <span>
+                    🔎
+                </span>
+
+                <div>
+
+                    <h3>
+                        Find Matches
+                    </h3>
+
+                    <p>
+                        Search for possible matches.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="/open-reports"
+                class="quick-card"
+            >
+
+                <span>
+                    📋
+                </span>
+
+                <div>
+
+                    <h3>
+                        Open Reports
+                    </h3>
+
+                    <p>
+                        View all currently open reports.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="/dashboard"
+                class="quick-card"
+            >
+
+                <span>
+                    📊
+                </span>
+
+                <div>
+
+                    <h3>
+                        Dashboard
+                    </h3>
+
+                    <p>
+                        Manage your reports and statuses.
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    {% else %}
+
+
+    <!-- LOGGED OUT -->
+
+    <section class="login-required">
+
+        <div class="login-required-icon">
+            🔐
+        </div>
+
+        <h2>
+            Login to Report an Item
+        </h2>
+
+        <p>
+            Create an account or login to report lost and found items.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a
+                href="/login"
+                class="btn primary-btn"
+            >
+                Login
+            </a>
+
+            <a
+                href="/register"
+                class="btn secondary-btn"
+            >
+                Create Account
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <section class="quick-section">
+
+        <p class="eyebrow">
+            EXPLORE
+        </p>
+
+        <h2>
+            Lost & Found Community
+        </h2>
+
+        <div class="quick-grid">
+
+            <a
+                href="/open-reports"
+                class="quick-card"
+            >
+
+                <span>
+                    📋
+                </span>
+
+                <div>
+
+                    <h3>
+                        Open Reports
+                    </h3>
+
+                    <p>
+                        Browse items currently marked as open.
+                    </p>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="/matches"
+                class="quick-card"
+            >
+
+                <span>
+                    🔎
+                </span>
+
+                <div>
+
+                    <h3>
+                        Possible Matches
+                    </h3>
+
+                    <p>
+                        See possible lost and found matches.
+                    </p>
+
+                </div>
+
+            </a>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+</main>
+
+
+<footer>
+
+    <p>
+        Lost & Found © 2026
+    </p>
+
+</footer>
+
+</body>
+
+</html>
